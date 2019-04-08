@@ -10,11 +10,12 @@
 	<title>Feedy</title>
 </head>
 <body>
-	<div>
-	<video id="localVideo"  controls />
-</div>
-	<video id="remoteVideo"  controls/>
-
+	<div ><video id="localVideo"  controls autoplay /></div>
+	<div><video id="remoteVideo"  controls/></div>
+	
+	<div class="call-button">
+		<button id="call-button">Call</button>
+	</div>
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/realtime.js"></script>
