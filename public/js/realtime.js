@@ -50,7 +50,7 @@ const sessionDescriptionHandler = sessionDescription => {
 
 const forwardIceCanidate = event => {
 	if (event.candidate !== null)
-		socket.emit("outgoing", { ice: event.canidate });
+		socket.emit("outgoing", { ice: event.candidate });
 };
 
 const connectRemoteStreamToVideo = event => {
@@ -125,11 +125,12 @@ socket.on("incoming", msg => {
 
 	//Now the incoming message can be either
 	// 		iceCanidate OR sessionDescription
-
 	if (msg.ice) {
+		console.log(msg);
 		//store that cannidate locally through the ICE framework
 		peerConnection.addIceCandidate(new RTCIceCandidate(msg.ice));
-	} else {
+	} else if (msg.sdp) {
+		console.log(msg);
 		//store the remote description locally through the description framework
 		peerConnection.setRemoteDescription(
 			new RTCSessionDescription(msg.sdp),

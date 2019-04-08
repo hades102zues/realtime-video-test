@@ -26,7 +26,6 @@ const server = app.listen(port, () =>
 const io = require("socket.io")(server);
 io.on("connection", socket => {
 	socket.on("outgoing", msg => {
-		console.log(msg);
-		//socket.broadcast.emit("incoming", msg);
+		socket.broadcast.emit("incoming", msg);
 	});
 });
