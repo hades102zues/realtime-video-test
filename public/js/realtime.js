@@ -1,9 +1,10 @@
 const socket = io();
 const localVideo = document.querySelector("#localVideo");
 const remoteVideo = document.querySelector("#remoteVideo");
+const callButton = document.querySelector("#call-button");
 
 let localStream; //holds the local video feed
-let peerConnection; //will hold the peer connection object
+let peerConnection = null; //will hold the peer connection object
 
 /**
 	Get rid of conflicts
@@ -35,22 +36,16 @@ window.RTCSessionDescription =
 
 //funcs
 
-const onLocalStream = stream => {
-	localStream = stream;
-
-	//append stream to local video
-	localVideo.srcObject = stream;
-};
-
-const onPageStart = () => {
-	//set the constraints
-	const constraints = { audio: true, video: true };
-
-	//perform the local stream, if media is set properly
-	if (navigator.getUserMedia)
-		navigator.getUserMedia(constraints, onLocalStream, err =>
-			console.log(err)
-		);
+const sessionDescriptionHandler = sessionDescription => {
+	//save the sessionDescription Locally then send it through
+	//the signalling server
+	peerConnection.setLocalDescription(
+		sessionDescription,
+		() => {
+			socket.emit("outgoing", { sdp: sessionDescription });
+		},
+		() => console.log("Failed to store session")
+	);
 };
 
 const forwardIceCanidate = event => {
@@ -92,6 +87,60 @@ const createPeerConnection = () => {
 	peerConnection.onaddstream = connectRemoteStreamToVideo;
 };
 
+const callButtonHandler = () => {
+	//create the peer connection object
+	createPeerConnection();
+
+	//send an offer
+	peerConnection.createOffer(sessionDescriptionHandler, err => {
+		console.log("Error on Offer Generation");
+	});
+};
+
+const onLocalStream = stream => {
+	localStream = stream;
+
+	//append stream to local video
+	localVideo.srcObject = stream;
+};
+
+const onPageStart = () => {
+	//set the constraints
+	const constraints = { audio: true, video: true };
+
+	//perform the local stream, if media is set properly
+	if (navigator.getUserMedia)
+		navigator.getUserMedia(constraints, onLocalStream, err =>
+			console.log(err)
+		);
+};
+
 //flow
 onPageStart();
-//on start call
+callButton.addEventListener("click", callButtonHandler);
+
+socket.on("incoming", msg => {
+	//First create a peer connection object to establish a connection, if none exists
+	if (peerConnection === null) createPeerConnection();
+
+	//Now the incoming message can be either
+	// 		iceCanidate OR sessionDescription
+
+	if (msg.ice) {
+		//store that cannidate locally through the ICE framework
+		peerConnection.addIceCandidate(new RTCIceCandidate(msg.ice));
+	} else {
+		//store the remote description locally through the description framework
+		peerConnection.setRemoteDescription(
+			new RTCSessionDescription(msg.sdp),
+			function() {
+				//if the remote session description type is an offer then send back an answer description
+				if (msg.sdp.type == "offer") {
+					peerConnection.createAnswer(sessionDescriptionHandler, () =>
+						console.log("error creating an anser")
+					);
+				}
+			}
+		);
+	}
+});
