@@ -12,3 +12,14 @@
 	height: 60%;
 	left: 30%;
 }
+
+@media all and (max-width: 850px) {
+	#localVideo {
+		width: 35%;
+	}
+
+	#remoteVideo {
+		width: 50%;
+		margin-left: 60px;
+	}
+}
