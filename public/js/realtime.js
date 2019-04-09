@@ -34,8 +34,7 @@ window.RTCSessionDescription =
 	window.mozRTCSessionDescription ||
 	window.webkitRTCSessionDescription;
 
-//funcs
-
+//***funcs
 const sessionDescriptionHandler = sessionDescription => {
 	//save the sessionDescription Locally then send it through
 	//the signalling server
@@ -127,10 +126,12 @@ socket.on("incoming", msg => {
 	// 		iceCanidate OR sessionDescription
 	if (msg.ice) {
 		console.log(msg);
+
 		//store that cannidate locally through the ICE framework
 		peerConnection.addIceCandidate(new RTCIceCandidate(msg.ice));
 	} else if (msg.sdp) {
 		console.log(msg);
+
 		//store the remote description locally through the description framework
 		peerConnection.setRemoteDescription(
 			new RTCSessionDescription(msg.sdp),
