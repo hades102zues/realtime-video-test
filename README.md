@@ -1,2 +1,3 @@
 # realtime-video-test
-using webrtc and socket.io
+A quick sandbox showing live video feed using webRTC to establish a p2p connection, with socket.io as the signalling server. With an insertion to that showcases that a remote data channel has also been established.
+Yes, it is not a pretty page...
