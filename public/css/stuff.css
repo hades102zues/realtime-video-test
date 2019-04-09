@@ -1,3 +1,9 @@
+#feed {
+	position: relative;
+	height: 100vh;
+	border: 1px solid red;
+}
+
 #localVideo {
 	position: absolute;
 	top: 10%;
@@ -26,6 +32,14 @@
 	border: none;
 	font-weight: bold;
 	cursor: pointer;
+}
+
+#chat-box {
+	padding: 25px;
+	height: 150px;
+	width: 25%;
+	border: 3px solid green;
+	margin: 0 auto;
 }
 
 @media all and (max-width: 850px) {
