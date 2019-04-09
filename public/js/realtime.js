@@ -118,6 +118,7 @@ const onPageStart = () => {
 onPageStart();
 callButton.addEventListener("click", callButtonHandler);
 
+//Receiver
 socket.on("incoming", msg => {
 	//First create a peer connection object to establish a connection, if none exists
 	if (peerConnection === null) createPeerConnection();
