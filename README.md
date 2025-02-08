@@ -3,6 +3,6 @@ A quick sandbox showing live video feed using webRTC to establish a p2p connecti
 
 The meat and potatoes of this project are in files: 
   public/js/realtime.js
-  server.js
+  & server.js
 
 And Yes, the webpage is extraordinary basic...
